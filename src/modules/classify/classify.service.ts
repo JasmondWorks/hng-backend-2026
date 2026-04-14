@@ -15,7 +15,7 @@ export class ClassifyService {
       throw new AppError("Failed to classify name", 500);
     }
 
-    const res: ClassifyApiResponseDTO = await response.json();
+    const res: ClassifyApiResponseDTO = (await response.json()) as any;
 
     const sample_size = res.count;
 
