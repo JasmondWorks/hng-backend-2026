@@ -29,7 +29,7 @@ export const globalErrorHandler = (
       console.error("ERROR 💥", err);
       res
         .status(500)
-        .json({ status: "error", message: "Something went very wrong!" });
+        .json({ status: "error", message: "Upstream or server failure" });
     }
   }
 };

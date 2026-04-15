@@ -9,10 +9,19 @@ export class ClassifyService {
   constructor(private genderizeApi: string) {}
 
   async classifyName(data: ClassifyQueryDTO): Promise<ClassifyResponseDTO> {
-    const response = await fetch(`${this.genderizeApi}/?name=${data.name}`);
+    let response: Response;
+
+    const serverErrorMessage = "Upstream or server failure";
+
+    try {
+      response = await fetch(`${this.genderizeApi}/?name=${data.name}`);
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      throw new AppError(serverErrorMessage, 502);
+    }
 
     if (!response.ok) {
-      throw new AppError("Failed to classify name", 500);
+      throw new AppError(serverErrorMessage, 500);
     }
 
     const res: ClassifyApiResponseDTO = (await response.json()) as any;
