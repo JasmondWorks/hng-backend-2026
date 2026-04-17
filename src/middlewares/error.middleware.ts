@@ -1,5 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import { AppError } from "../utils/app-error.util";
 import { envConfig } from "../config/env.config";
+
+function normalizeError(err: any): any {
+  if (err.name === "CastError" && err.kind === "ObjectId")
+    return new AppError(`Invalid id: ${err.value}`, 400);
+  return err;
+}
 
 export const globalErrorHandler = (
   err: any,
@@ -7,6 +14,7 @@ export const globalErrorHandler = (
   res: Response,
   _next: NextFunction,
 ) => {
+  err = normalizeError(err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 

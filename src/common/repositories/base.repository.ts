@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { AppError } from "../../utils/app-error.util";
 import { IRepository } from "./base.repository.interface";
 
 export abstract class BaseRepository<T, CreateInput, UpdateInput>
@@ -12,9 +13,19 @@ export abstract class BaseRepository<T, CreateInput, UpdateInput>
     return { id: _id.toString(), ...rest } as T;
   }
 
+  private guardId(err: any): never {
+    if (err.name === "CastError" && err.kind === "ObjectId")
+      throw new AppError(`Invalid id: ${err.value}`, 400);
+    throw err;
+  }
+
   async findById(id: string): Promise<T | null> {
-    const doc = await this.model.findById(id);
-    return doc ? this.toEntity(doc) : null;
+    try {
+      const doc = await this.model.findById(id);
+      return doc ? this.toEntity(doc) : null;
+    } catch (err) {
+      this.guardId(err);
+    }
   }
 
   async findAll(): Promise<T[]> {
@@ -33,11 +44,19 @@ export abstract class BaseRepository<T, CreateInput, UpdateInput>
   }
 
   async update(id: string, data: UpdateInput): Promise<T | null> {
-    const doc = await this.model.findByIdAndUpdate(id, data as any, { new: true });
-    return doc ? this.toEntity(doc) : null;
+    try {
+      const doc = await this.model.findByIdAndUpdate(id, data as any, { new: true });
+      return doc ? this.toEntity(doc) : null;
+    } catch (err) {
+      this.guardId(err);
+    }
   }
 
   async delete(id: string): Promise<void> {
-    await this.model.findByIdAndDelete(id);
+    try {
+      await this.model.findByIdAndDelete(id);
+    } catch (err) {
+      this.guardId(err);
+    }
   }
 }

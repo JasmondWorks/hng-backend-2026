@@ -15,7 +15,7 @@ const requiredEnvVars = [
   "mongoUrl",
   "port",
   "env",
-  "debug",
+  // "debug",
 ];
 
 requiredEnvVars.forEach((envVar) => {

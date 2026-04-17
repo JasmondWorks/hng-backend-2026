@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
+let cached: Promise<typeof mongoose> | null = null;
+
 export async function connectDB() {
-  await mongoose.connect(process.env.MONGO_URL!);
-  console.log("MongoDB connected");
+  if (!cached) {
+    cached = mongoose.connect(process.env.MONGO_URL!).then(() => mongoose);
+  }
+  return cached;
 }

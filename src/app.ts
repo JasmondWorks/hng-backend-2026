@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 import express, { NextFunction, Request, Response } from "express";
 
 import v1Routes from "./routes/v1.route";
+import { connectDB } from "./db/mongoose";
 
 import { globalErrorHandler } from "./middlewares/error.middleware";
 
@@ -54,6 +55,7 @@ app.use(limiter);
 
 // ==== Middlewares
 app.use(express.json());
+app.use((_req, _res, next) => { connectDB().then(() => next()).catch(next); });
 app.use(
   cors({
     origin: "*",
