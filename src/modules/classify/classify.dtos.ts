@@ -1,16 +1,16 @@
-export class ClassifyApiResponseDTO {
+export class CreateClassificationDTO {
   name!: string;
-  gender!: string;
+  gender!: string | null;
   probability!: number;
-  count!: number;
+  sampleSize!: number;
+  isConfident!: boolean;
 }
 
-export class ClassifyResponseDTO {
-  name!: string;
-  gender!: string;
+export class UpdateClassificationDTO {
+  gender!: string | null;
   probability!: number;
-  sample_size!: number;
-  is_confident!: boolean;
+  sampleSize!: number;
+  isConfident!: boolean;
 }
 
 export class ClassifyQueryDTO {

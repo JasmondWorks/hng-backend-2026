@@ -1,17 +1,17 @@
+import { ClassificationRepository } from "./classify.repository";
 import { AppError } from "../../utils/app-error.util";
 import {
-  ClassifyApiResponseDTO,
-  ClassifyQueryDTO,
-  ClassifyResponseDTO,
-} from "./classify.dtos";
+  ClassifyExternalApiResponse,
+  ClassifyResponse,
+} from "./classify.types";
+import { ClassifyQueryDTO } from "./classify.dtos";
 
 export class ClassifyService {
-  constructor(private genderizeApi: string) {}
+  constructor(private readonly genderizeApi: string) {}
 
-  async classifyName(data: ClassifyQueryDTO): Promise<ClassifyResponseDTO> {
-    let response: Response;
-
+  async classifyName(data: ClassifyQueryDTO): Promise<ClassifyResponse> {
     const serverErrorMessage = "Upstream or server failure";
+    let response: Response;
 
     try {
       response = await fetch(`${this.genderizeApi}/?name=${data.name}`);
@@ -20,22 +20,17 @@ export class ClassifyService {
       throw new AppError(serverErrorMessage, 502);
     }
 
-    if (!response.ok) {
-      throw new AppError(serverErrorMessage, 500);
-    }
+    if (!response.ok) throw new AppError(serverErrorMessage, 500);
 
-    const res: ClassifyApiResponseDTO = (await response.json()) as any;
+    const { name, gender, probability, count } =
+      (await response.json()) as ClassifyExternalApiResponse;
 
-    const sample_size = res.count;
-
-    const payload = {
-      name: res.name,
-      gender: res.gender,
-      probability: res.probability,
-      sample_size,
-      is_confident: res.probability > 0.7 && sample_size >= 100,
+    return {
+      name,
+      gender,
+      probability,
+      sample_size: count,
+      is_confident: probability > 0.7 && count >= 100,
     };
-
-    return payload;
   }
 }

@@ -25,32 +25,32 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Middleware to inject processed_at and attach it to all JSON responses
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const processed_at = new Date().toISOString(); // UTC ISO 8601
-  (req as unknown as Record<string, unknown>).processed_at = processed_at;
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   const processed_at = new Date().toISOString(); // UTC ISO 8601
+//   (req as unknown as Record<string, unknown>).processed_at = processed_at;
 
-  const originalJson = res.json;
-  res.json = function (body) {
-    if (res.statusCode >= 200 && res.statusCode < 400) {
-      if (body && typeof body === "object" && !Array.isArray(body)) {
-        if (
-          body.data &&
-          typeof body.data === "object" &&
-          !Array.isArray(body.data)
-        ) {
-          // Appends to the 'data' payload for successful wrapped responses
-          body.data.processed_at = processed_at;
-        } else {
-          // Fallback to top-level if no 'data' wrapper exists on success
-          body.processed_at = processed_at;
-        }
-      }
-    }
-    return originalJson.call(this, body);
-  };
+//   const originalJson = res.json;
+//   res.json = function (body) {
+//     if (res.statusCode >= 200 && res.statusCode < 400) {
+//       if (body && typeof body === "object" && !Array.isArray(body)) {
+//         if (
+//           body.data &&
+//           typeof body.data === "object" &&
+//           !Array.isArray(body.data)
+//         ) {
+//           // Appends to the 'data' payload for successful wrapped responses
+//           body.data.processed_at = processed_at;
+//         } else {
+//           // Fallback to top-level if no 'data' wrapper exists on success
+//           body.processed_at = processed_at;
+//         }
+//       }
+//     }
+//     return originalJson.call(this, body);
+//   };
 
-  next();
-});
+//   next();
+// });
 
 // ==== Middlewares
 app.use(express.json());
