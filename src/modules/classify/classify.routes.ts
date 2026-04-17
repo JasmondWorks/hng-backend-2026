@@ -1,14 +1,17 @@
 import { Router } from "express";
-import { ClassifyController } from "./classify.controller";
-import { ClassifyService } from "./classify.service";
 import { envConfig } from "../../config/env.config";
 import { validateRequest } from "../../middlewares/validate-request.middleware";
+import { ClassifyController } from "./classify.controller";
+import { ClassifyService } from "./classify.service";
 import { classifyNameValidator } from "./classify.validators";
 
-const router = Router();
+const router: Router = Router();
 
-const classifyController = new ClassifyController(
-  new ClassifyService(envConfig.genderizeApiUrl),
+const classifyService: ClassifyService = new ClassifyService(
+  envConfig.genderizeApiUrl,
+);
+const classifyController: ClassifyController = new ClassifyController(
+  classifyService,
 );
 
 router.get(

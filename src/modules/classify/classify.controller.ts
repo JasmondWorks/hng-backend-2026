@@ -1,27 +1,20 @@
 import { Request, Response } from "express";
-import { ClassifyService } from "./classify.service";
 import { sendSuccess } from "../../utils/api-response.util";
 import { AppError } from "../../utils/app-error.util";
 import { ClassifyQueryDTO } from "./classify.dtos";
+import { ClassifyService } from "./classify.service";
 
 export class ClassifyController {
-  constructor(private classifyService: ClassifyService) {}
+  constructor(private readonly classifyService: ClassifyService) {}
 
   async classifyName(req: Request, res: Response) {
-    try {
-      const data = req.query as unknown as ClassifyQueryDTO;
+    const query = req.query as unknown as ClassifyQueryDTO;
 
-      const result = await this.classifyService.classifyName(data);
+    const result = await this.classifyService.classifyName(query);
 
-      if (result.gender === null || result.sample_size === 0)
-        throw new AppError(
-          "No prediction available for the provided name",
-          404,
-        );
+    if (result.gender === null || result.sample_size === 0)
+      throw new AppError("No prediction available for the provided name", 404);
 
-      sendSuccess(res, result);
-    } catch (error) {
-      throw error;
-    }
+    sendSuccess(res, result);
   }
 }

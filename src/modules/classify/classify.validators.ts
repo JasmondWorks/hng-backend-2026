@@ -5,16 +5,12 @@ export const classifyNameValidator = [
     .exists()
     .withMessage("Name is required")
     .bail()
-    .custom((value) => {
-      if (typeof value !== "string") {
-        throw new Error("Name is not a string");
-      }
-      return true;
-    })
+    .isString()
+    .withMessage("Name must be a string")
     .bail()
     .notEmpty()
     .withMessage("Name is required")
     .bail()
     .matches(/^[A-Za-z\s\-']+$/)
-    .withMessage("Name is not a string"),
+    .withMessage("Name must contain only letters, spaces, hyphens, or apostrophes"),
 ];
