@@ -5,8 +5,13 @@ let isDbConnected = false;
 
 const handler = async (req: any, res: any) => {
   if (!isDbConnected) {
-    await connectDB();
-    isDbConnected = true;
+    try {
+      await connectDB();
+      isDbConnected = true;
+    } catch (err) {
+      console.error("[DB] Connection failed:", err);
+      return res.status(503).json({ status: "error", message: "Database unavailable" });
+    }
   }
   return app(req, res);
 };
