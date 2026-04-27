@@ -7,6 +7,14 @@ export const envConfig = {
   nationalizeApiUrl:
     process.env.NATIONALIZE_API_URL || "https://api.nationalize.io",
   mongoUrl: process.env.MONGO_URL!,
+
+  githubClientId: process.env.GITHUB_CLIENT_ID!,
+  githubClientSecret: process.env.GITHUB_CLIENT_SECRET!,
+  githubCallbackUrl: process.env.GITHUB_CALLBACK_URL!,
+  githubAccessTokenUrl: process.env.GITHUB_ACCESS_TOKEN_URL!,
+  githubUserUrl: process.env.GITHUB_USER_URL!,
+  githubLoginUrl: process.env.GITHUB_LOGIN_URL!,
+  githubState: process.env.GITHUB_STATE!,
 };
 
 const requiredEnvVars = [
