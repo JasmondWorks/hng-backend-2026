@@ -13,7 +13,6 @@ import { globalErrorHandler } from "./middlewares/error.middleware";
 import { requestLogger } from "./middlewares/request-logger.middleware";
 
 import { AppError } from "./utils/app-error.util";
-import { envConfig } from "./config/env.config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -25,7 +24,7 @@ app.set("trust proxy", 1);
 
 app.use(requestLogger);
 app.use(cors({ origin: "*" }));
-app.use(cookieParser(envConfig.jwtAccessTokenSecret));
+app.use(cookieParser());
 
 // Middleware to inject processed_at and attach it to all JSON responses
 // app.use((req: Request, res: Response, next: NextFunction) => {
