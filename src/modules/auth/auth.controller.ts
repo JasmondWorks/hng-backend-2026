@@ -13,13 +13,11 @@ export class AuthController {
 
     res.cookie("pkce_verifier", codeVerifier, {
       httpOnly: true,
-      signed: true,
       maxAge: 5 * 60 * 1000,
     });
 
     res.cookie("oauth_state", state, {
       httpOnly: true,
-      signed: true,
       maxAge: 5 * 60 * 1000,
     });
 
@@ -38,8 +36,8 @@ export class AuthController {
       throw new AppError("Invalid or expired OAuth state", 400);
     }
 
-    const storedState = req.signedCookies["oauth_state"];
-    const codeVerifier = req.signedCookies["pkce_verifier"];
+    const storedState = req.cookies["oauth_state"] as string | undefined;
+    const codeVerifier = req.cookies["pkce_verifier"] as string | undefined;
 
     if (!storedState || storedState !== state || !codeVerifier) {
       throw new AppError("Invalid or expired OAuth state", 400);
