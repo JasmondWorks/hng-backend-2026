@@ -150,3 +150,5 @@ api/index.js
 api/index.js.map
 api/index.d.ts
 api/index.d.ts.map
+temp_auto_push.bat
+temp_interactive_push.bat
